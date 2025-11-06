@@ -17,37 +17,19 @@ st.set_page_config(
 def load_saved_artifacts():
     """Load the trained model and location data"""
     try:
-        # Try to load from different possible paths
-        base_paths = ['server/artifacts/', 'model/', './', 'artifacts/']
+        # Load from artifacts directory
+        base_dir = os.path.dirname(__file__)
         
-        data_columns = None
-        locations = None
-        model = None
+        # Load columns
+        columns_path = os.path.join(base_dir, "artifacts", "columns.json")
+        with open(columns_path, "r") as f:
+            data_columns = json.load(f)['data_columns']
+            locations = data_columns[3:]  # first 3 columns are sqft, bath, bhk
         
-        for base_path in base_paths:
-            try:
-                # Load columns
-                columns_path = os.path.join(base_path, 'columns.json')
-                if os.path.exists(columns_path):
-                    with open(columns_path, "r") as f:
-                        data_columns = json.load(f)['data_columns']
-                        locations = data_columns[3:]  # first 3 columns are sqft, bath, bhk
-                
-                # Load model
-                model_path = os.path.join(base_path, 'delhi_home_prices_model.pickle')
-                if os.path.exists(model_path):
-                    with open(model_path, 'rb') as f:
-                        model = pickle.load(f)
-                
-                if data_columns and model:
-                    break
-                    
-            except Exception as e:
-                continue
-        
-        if not data_columns or not model:
-            st.error("Could not load model files. Please check if the model files exist.")
-            return None, None, None
+        # Load model
+        model_path = os.path.join(base_dir, "artifacts", "delhi_home_prices_model.pickle")
+        with open(model_path, 'rb') as f:
+            model = pickle.load(f)
             
         return data_columns, locations, model
         
