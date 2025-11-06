@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delhi Home Price Predictor | Smart Real Estate</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            min-height: 700px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="rgba(255,255,255,0.05)"><polygon points="50,0 100,50 50,100 0,50"/></svg>');
+            background-size: 80px 80px;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 32px;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .feature i {
+            color: var(--secondary);
+        }
+
+        .form-section {
+            padding: 60px 40px;
+            background: var(--light);
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-header p {
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .radio-item {
+            flex: 1;
+            min-width: 60px;
+        }
+
+        .radio-item input {
+            display: none;
+        }
+
+        .radio-item label {
+            display: block;
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .radio-item input:checked + label {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            border-left: 5px solid var(--secondary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .result-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section {
+                padding: 40px 20px;
+                text-align: center;
+            }
+
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .form-section {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="logo">
+                    <i class="fas fa-home"></i>
+                    <span>DelhiPricePredict</span>
+                </div>
+                <h1>Smart Home Price Prediction for Delhi & NCR</h1>
+                <p>Get accurate price estimates for properties across Delhi, Noida, Gurgaon, and Ghaziabad using our advanced AI-powered prediction model.</p>
+
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Instant price estimates</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>63+ locations covered</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Data-driven insights</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Reliable predictions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Estimate Price</h2>
+                    <p>Fill in the details to get an instant price estimate</p>
+                </div>
+
+                <form class="form">
+                    <!-- Square Feet -->
+                    <div class="form-group">
+                        <label for="uiSqft">Area (Square Feet)</label>
+                        <div class="input-group">
+                            <input type="number" id="uiSqft" class="area" value="1000" min="100" max="10000" step="100">
+                        </div>
+                    </div>
+
+                    <!-- BHK -->
+                    <div class="form-group">
+                        <label>BHK</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bhk-1" name="uiBHK" value="1">
+                                <label for="radio-bhk-1">1</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bhk-2" name="uiBHK" value="2" checked>
+                                <label for="radio-bhk-2">2</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bhk-3" name="uiBHK" value="3">
+                                <label for="radio-bhk-3">3</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bhk-4" name="uiBHK" value="4">
+                                <label for="radio-bhk-4">4</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bhk-5" name="uiBHK" value="5">
+                                <label for="radio-bhk-5">5</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bathrooms -->
+                    <div class="form-group">
+                        <label>Bathrooms</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bath-1" name="uiBathrooms" value="1">
+                                <label for="radio-bath-1">1</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bath-2" name="uiBathrooms" value="2" checked>
+                                <label for="radio-bath-2">2</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bath-3" name="uiBathrooms" value="3">
+                                <label for="radio-bath-3">3</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bath-4" name="uiBathrooms" value="4">
+                                <label for="radio-bath-4">4</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="radio-bath-5" name="uiBathrooms" value="5">
+                                <label for="radio-bath-5">5</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="uiLocations">Location</label>
+                        <div class="input-group">
+                            <select class="location" id="uiLocations">
+                                <option value="" disabled selected>Choose a Location</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button class="submit-btn" type="button" onclick="onClickedEstimatePrice()">
+                        <i class="fas fa-calculator"></i>
+                        Estimate Price
+                    </button>
+                </form>
+
+                <!-- Loading -->
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Calculating your estimate...</p>
+                </div>
+
+                <!-- Result -->
+                <div class="result-container" id="uiEstimatedPrice">
+                    <div class="result-price" id="estimatedPrice">0.00</div>
+                    <div class="result-label">Estimated Property Value</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getBathValue() {
+            var uiBathrooms = document.getElementsByName("uiBathrooms");
+            for(var i = 0; i < uiBathrooms.length; i++) {
+                if(uiBathrooms[i].checked) {
+                    return parseInt(uiBathrooms[i].value);
+                }
+            }
+            return 2; // Default value
+        }
+
+        function getBHKValue() {
+            var uiBHK = document.getElementsByName("uiBHK");
+            for(var i = 0; i < uiBHK.length; i++) {
+                if(uiBHK[i].checked) {
+                    return parseInt(uiBHK[i].value);
+                }
+            }
+            return 2; // Default value
+        }
+
+        function onClickedEstimatePrice() {
+            console.log("Estimate price button clicked");
+            var sqft = document.getElementById("uiSqft");
+            var bhk = getBHKValue();
+            var bathrooms = getBathValue();
+            var location = document.getElementById("uiLocations");
+            var estPriceElement = document.getElementById("estimatedPrice");
+            var resultContainer = document.getElementById("uiEstimatedPrice");
+            var loading = document.getElementById("loading");
+
+            // Validation
+            if (!sqft.value || sqft.value < 100) {
+                alert("Please enter a valid area (minimum 100 sqft)");
+                return;
+            }
+
+            if (location.value === "" || !location.value) {
+                alert("Please select a location");
+                return;
+            }
+
+            // Show loading
+            loading.style.display = 'block';
+            resultContainer.classList.remove('show');
+
+            var url = "http://127.0.0.1:5000/predict_home_price";
+
+            $.post(url, {
+                total_sqft: parseFloat(sqft.value),
+                bhk: bhk,
+                bath: bathrooms,
+                location: location.value
+            }, function(data, status) {
+                loading.style.display = 'none';
+
+                if (data.estimated_price) {
+                    estPriceElement.textContent = data.estimated_price.toString() + " Lakh";
+                    resultContainer.classList.add('show');
+                } else if (data.error) {
+                    alert("Error: " + data.error);
+                }
+                console.log(status);
+            }).fail(function(xhr, status, error) {
+                loading.style.display = 'none';
+                alert("Error connecting to server. Please try again.");
+                console.error("Error:", error);
+            });
+        }
+
+        function onPageLoad() {
+            console.log("document loaded");
+            var url = "http://127.0.0.1:5000/get_location_names";
+
+            $.get(url, function(data, status) {
+                console.log("got response for get_location_names request");
+                if(data && data.locations) {
+                    var locations = data.locations;
+                    var uiLocations = document.getElementById("uiLocations");
+
+                    // Clear existing options except the first one
+                    $('#uiLocations').empty();
+                    $('#uiLocations').append('<option value="" disabled selected>Choose a Location</option>');
+
+                    // Add locations sorted alphabetically
+                    locations.sort().forEach(function(location) {
+                        var opt = new Option(location, location);
+                        $('#uiLocations').append(opt);
+                    });
+                }
+            }).fail(function(xhr, status, error) {
+                console.error("Failed to load locations:", error);
+                // Fallback locations
+                var fallbackLocations = ['Dwarka', 'Raj Nagar Extension', 'Sector 62', 'Indirapuram', 'Greater Noida'];
+                fallbackLocations.sort().forEach(function(location) {
+                    var opt = new Option(location, location);
+                    $('#uiLocations').append(opt);
+                });
+            });
+        }
+
+        window.onload = onPageLoad;
+    </script>
+</body>
+</html>
